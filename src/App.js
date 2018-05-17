@@ -32,7 +32,7 @@ class App extends React.Component {
     return (
       <div className="container">
         <Navbar toggleList={this.toggleList.bind(this)} />
-        {this.state.viewList && <List />}
+        {this.state.viewList && <List map={this.state.map} />}
         <div id="map" />
       </div>
     );
