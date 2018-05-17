@@ -1,7 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
+import Navbar from './Navbar';
+import List from './List';
 
-class App extends Component {
-  state = {};
+class App extends React.Component {
+  state = {
+    viewList: false
+  };
 
   componentDidMount() {
     this.setState({
@@ -16,8 +20,22 @@ class App extends Component {
     });
   }
 
+  toggleList(event) {
+    this.state.viewList
+      ? this.setState({ viewList: false })
+      : this.setState({ viewList: true });
+
+    console.log(this.state.viewList);
+  }
+
   render() {
-    return <div id="map" />;
+    return (
+      <div className="container">
+        <Navbar toggleList={this.toggleList.bind(this)} />
+        {this.state.viewList && <List />}
+        <div id="map" />
+      </div>
+    );
   }
 }
 
