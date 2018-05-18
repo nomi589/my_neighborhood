@@ -95,7 +95,8 @@ class App extends React.Component {
       markers.push(
         new window.google.maps.Marker({
           position: location.position,
-          map: map
+          map: map,
+          title: location.name
         })
       );
     });
