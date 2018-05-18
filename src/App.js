@@ -43,7 +43,8 @@ const placesOfInterest = [
 
 class App extends React.Component {
   state = {
-    viewList: false
+    viewList: true,
+    locations: placesOfInterest
   };
 
   componentDidMount() {
@@ -52,12 +53,29 @@ class App extends React.Component {
 
   initializeMap() {
     let map = new window.google.maps.Map(document.getElementById('map'), {
-      center: { lat: 31.588185, lng: 74.312794 },
+      center: { lat: 31.588563, lng: 74.308521 },
       zoom: 16
     });
 
     this.placeMarkers(placesOfInterest, map);
     this.setState({ map });
+  }
+
+  updateLocations(query) {
+    let displayedLocations;
+
+    if (query) {
+      const match = new RegExp(query, 'i');
+      displayedLocations = placesOfInterest.filter(location =>
+        match.test(location.name)
+      );
+
+      this.setState({ locations: displayedLocations });
+      this.placeMarkers(displayedLocations);
+    } else {
+      this.setState({ locations: placesOfInterest });
+      this.placeMarkers(placesOfInterest);
+    }
   }
 
   clearCurrentMarkers() {
@@ -95,7 +113,12 @@ class App extends React.Component {
     return (
       <div className="container">
         <Navbar toggleList={this.toggleList.bind(this)} />
-        {this.state.viewList && <List locations={placesOfInterest} />}
+        {this.state.viewList && (
+          <List
+            locations={this.state.locations}
+            updateLocations={this.updateLocations.bind(this)}
+          />
+        )}
         <Map />
       </div>
     );
