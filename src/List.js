@@ -24,7 +24,12 @@ class List extends React.Component {
         <ul>
           {this.props.locations.map((place, index) => {
             return (
-              <li key={index} onClick={() => console.log(place.name)}>
+              <li
+                key={index}
+                tabIndex="0"
+                role="link"
+                onClick={() => console.log(place.name)}
+              >
                 {place.name}
               </li>
             );
