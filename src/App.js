@@ -57,7 +57,7 @@ class App extends React.Component {
       zoom: 16
     });
 
-    this.placeMarkers(placesOfInterest, map);
+    this.updateMarkers(placesOfInterest, map);
     this.setState({ map });
   }
 
@@ -70,11 +70,11 @@ class App extends React.Component {
         match.test(location.name)
       );
 
+      this.updateMarkers(displayedLocations);
       this.setState({ locations: displayedLocations });
-      this.placeMarkers(displayedLocations);
     } else {
+      this.updateMarkers(placesOfInterest);
       this.setState({ locations: placesOfInterest });
-      this.placeMarkers(placesOfInterest);
     }
   }
 
@@ -86,7 +86,7 @@ class App extends React.Component {
     }
   }
 
-  placeMarkers(locations, map = this.state.map) {
+  updateMarkers(locations, map = this.state.map) {
     let markers = [];
 
     this.clearCurrentMarkers();
