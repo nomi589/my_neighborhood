@@ -18,6 +18,12 @@ nav {
   align-items: center;
 }
 
+nav button {
+  width: 100px;
+  height: 25px;
+  font-weight: bold;
+}
+
 .list {
   width: 50%;
   height: 50vh;
