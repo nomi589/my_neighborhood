@@ -43,7 +43,7 @@ const placesOfInterest = [
 
 class App extends React.Component {
   state = {
-    viewList: true,
+    viewList: false,
     locations: placesOfInterest
   };
 
