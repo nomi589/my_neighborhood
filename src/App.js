@@ -69,6 +69,11 @@ let animateMarker = marker => {
   );
 };
 
+let infoWindowContent = (marker, text) => {
+  let content = text ? text : 'Loading more content...';
+  return `<h3>${marker.getTitle()}</h3><p>${content}</p>`;
+};
+
 class App extends React.Component {
   state = {
     viewList: false,
@@ -149,14 +154,48 @@ class App extends React.Component {
     this.setState({ markers });
   }
 
+  updateInfoWindowContent(marker) {
+    let api_request_url = `https://en.wikipedia.org/w/api.php?format=json&action=query&origin=*&prop=extracts&exintro=&explaintext=&titles=${marker.getTitle()}`;
+
+    fetch(api_request_url)
+      .then(response => response.json())
+      .then(data => {
+        let firstPage = data.query.pages[Object.keys(data.query.pages)[0]];
+        let content = firstPage.extract
+          ? firstPage.extract
+          : 'No additional information could be found about this location.';
+
+        this.setState(prevState => {
+          let infoWindow = prevState.infoWindow;
+          infoWindow.setContent(infoWindowContent(marker, content));
+          return { infoWindow };
+        });
+      })
+      .catch(error =>
+        this.state.infoWindow.setContent(
+          infoWindowContent(
+            marker,
+            `Couldn't fetch additional information. Are you having internet connection issues by any chance?`
+          )
+        )
+      );
+  }
+
   locationClickHandler(position) {
     let marker = findMarker(position, this.state.markers);
 
     if (marker) {
       animateMarker(marker);
 
-      this.state.infoWindow.setContent(marker.getTitle());
-      this.state.infoWindow.open(this.state.map, marker);
+      this.setState(prevState => {
+        let infoWindow = prevState.infoWindow;
+        infoWindow.setContent(infoWindowContent(marker));
+        infoWindow.open(this.state.map, marker);
+
+        return { infoWindow };
+      });
+
+      this.updateInfoWindowContent(marker);
     } else {
       console.log('Error: Marker not found.');
     }
