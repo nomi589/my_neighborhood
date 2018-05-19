@@ -41,6 +41,34 @@ const placesOfInterest = [
   }
 ];
 
+/**
+ * Helper functions
+ */
+let setPrecision = (number, precision) => {
+  return parseFloat(number.toFixed(precision));
+};
+
+let findMarker = (position, listOfMarkers) => {
+  return listOfMarkers.filter(marker => {
+    let markerLatLng = marker.getPosition();
+    return (
+      position.lat === setPrecision(markerLatLng.lat(), 6) &&
+      position.lng === setPrecision(markerLatLng.lng(), 6)
+    );
+  })[0];
+};
+
+let animateMarker = marker => {
+  marker.setAnimation(window.google.maps.Animation.BOUNCE);
+  setTimeout(
+    () => {
+      marker.setAnimation(null);
+    },
+    500,
+    marker
+  );
+};
+
 class App extends React.Component {
   state = {
     viewList: false,
@@ -109,8 +137,8 @@ class App extends React.Component {
       });
       marker.addListener('click', event => {
         const position = {
-          lat: event.latLng.lat(),
-          lng: event.latLng.lng()
+          lat: setPrecision(event.latLng.lat(), 6),
+          lng: setPrecision(event.latLng.lng(), 6)
         };
         this.locationClickHandler(position);
       });
@@ -122,24 +150,16 @@ class App extends React.Component {
   }
 
   locationClickHandler(position) {
-    let marker = this.state.markers.filter(marker => {
-      let markerLatLng = marker.getPosition();
-      return (
-        position.lat === markerLatLng.lat() &&
-        position.lng === markerLatLng.lng()
-      );
-    })[0];
+    let marker = findMarker(position, this.state.markers);
 
-    marker.setAnimation(window.google.maps.Animation.BOUNCE);
-    setTimeout(
-      () => {
-        marker.setAnimation(null);
-      },
-      500,
-      marker
-    );
+    if (marker) {
+      animateMarker(marker);
 
-    this.state.infoWindow.open(this.state.map, marker);
+      this.state.infoWindow.setContent(marker.getTitle());
+      this.state.infoWindow.open(this.state.map, marker);
+    } else {
+      console.log('Error: Marker not found.');
+    }
   }
 
   toggleList(event) {
@@ -156,6 +176,7 @@ class App extends React.Component {
           <List
             locations={this.state.locations}
             updateLocations={this.updateLocations.bind(this)}
+            locationClickHandler={this.locationClickHandler.bind(this)}
           />
         )}
         <Map />

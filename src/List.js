@@ -10,6 +10,10 @@ class List extends React.Component {
     this.props.updateLocations(value);
   }
 
+  componentWillUnmount() {
+    this.props.updateLocations('');
+  }
+
   render() {
     return (
       <section className="list">
@@ -28,7 +32,7 @@ class List extends React.Component {
                 key={index}
                 tabIndex="0"
                 role="link"
-                onClick={() => console.log(place.name)}
+                onClick={() => this.props.locationClickHandler(place.position)}
               >
                 {place.name}
               </li>
