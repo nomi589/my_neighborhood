@@ -92,16 +92,42 @@ class App extends React.Component {
     this.clearCurrentMarkers();
 
     locations.forEach(location => {
-      markers.push(
-        new window.google.maps.Marker({
-          position: location.position,
-          map: map,
-          title: location.name
-        })
-      );
+      let marker = new window.google.maps.Marker({
+        position: location.position,
+        map: map,
+        title: location.name
+      });
+      marker.addListener('click', event => {
+        const position = {
+          lat: event.latLng.lat(),
+          lng: event.latLng.lng()
+        };
+        this.locationClickHandler(position);
+      });
+
+      markers.push(marker);
     });
 
     this.setState({ markers });
+  }
+
+  locationClickHandler(position) {
+    let marker = this.state.markers.filter(marker => {
+      let markerLatLng = marker.getPosition();
+      return (
+        position.lat === markerLatLng.lat() &&
+        position.lng === markerLatLng.lng()
+      );
+    })[0];
+
+    marker.setAnimation(window.google.maps.Animation.BOUNCE);
+    setTimeout(
+      () => {
+        marker.setAnimation(null);
+      },
+      500,
+      marker
+    );
   }
 
   toggleList(event) {
