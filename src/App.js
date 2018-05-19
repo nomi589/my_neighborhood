@@ -49,6 +49,7 @@ class App extends React.Component {
 
   componentDidMount() {
     this.initializeMap();
+    this.initializeInfoWindow();
   }
 
   initializeMap() {
@@ -59,6 +60,15 @@ class App extends React.Component {
 
     this.updateMarkers(placesOfInterest, map);
     this.setState({ map });
+  }
+
+  initializeInfoWindow() {
+    let infoWindow = new window.google.maps.InfoWindow({
+      content: 'Loading content...',
+      maxWidth: 300
+    });
+
+    this.setState({ infoWindow });
   }
 
   updateLocations(query) {
@@ -128,6 +138,8 @@ class App extends React.Component {
       500,
       marker
     );
+
+    this.state.infoWindow.open(this.state.map, marker);
   }
 
   toggleList(event) {
