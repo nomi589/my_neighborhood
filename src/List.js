@@ -32,6 +32,11 @@ class List extends React.Component {
                 key={index}
                 tabIndex="0"
                 role="link"
+                onKeyPress={event => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    this.props.locationClickHandler(place.position);
+                  }
+                }}
                 onClick={() => this.props.locationClickHandler(place.position)}
               >
                 {place.name}
