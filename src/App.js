@@ -71,7 +71,7 @@ let animateMarker = marker => {
 
 let infoWindowContent = (marker, text) => {
   let content = text ? text : 'Loading more content...';
-  return `<h3>${marker.getTitle()}</h3><p>${content}</p>`;
+  return `<h3>${marker.getTitle()}</h3><p>${content}</p><p>(Attribution: Wikipedia API)</p>`;
 };
 
 class App extends React.Component {
