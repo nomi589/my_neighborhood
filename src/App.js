@@ -41,6 +41,8 @@ const placesOfInterest = [
   }
 ];
 
+let intervalId;
+
 /**
  * Helper functions
  */
@@ -76,13 +78,30 @@ let infoWindowContent = (marker, text) => {
 
 class App extends React.Component {
   state = {
+    googleMapsLoaded: false,
     viewList: false,
     locations: placesOfInterest
   };
 
   componentDidMount() {
-    this.initializeMap();
-    this.initializeInfoWindow();
+    if (this.state.googleMapsLoaded) {
+      this.initializeMap();
+      this.initializeInfoWindow();
+    } else {
+      intervalId = setInterval(this.checkGoogleMapsLoadedStatus, 1000, this);
+    }
+  }
+
+  checkGoogleMapsLoadedStatus() {
+    let app = arguments[0];
+    if (typeof window.google === 'object') {
+      clearInterval(intervalId);
+      app.setState({ googleMapsLoaded: true });
+      app.initializeMap();
+      app.initializeInfoWindow();
+    } else {
+      console.log('Google maps not loaded');
+    }
   }
 
   initializeMap() {
@@ -210,7 +229,10 @@ class App extends React.Component {
   render() {
     return (
       <div className="container">
-        <Navbar toggleList={this.toggleList.bind(this)} />
+        <Navbar
+          googleMapsLoaded={this.state.googleMapsLoaded}
+          toggleList={this.toggleList.bind(this)}
+        />
         {this.state.viewList && (
           <List
             locations={this.state.locations}
@@ -218,7 +240,7 @@ class App extends React.Component {
             locationClickHandler={this.locationClickHandler.bind(this)}
           />
         )}
-        <Map />
+        <Map googleMapsLoaded={this.state.googleMapsLoaded} />
       </div>
     );
   }
