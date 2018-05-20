@@ -21,7 +21,7 @@ class List extends React.Component {
           <input
             type="text"
             onChange={event => this.updateQuery(event.target.value)}
-            placeholder="Type here to filter locations below..."
+            placeholder="Type to filter..."
             value={this.state.query}
           />
         </section>

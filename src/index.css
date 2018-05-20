@@ -26,7 +26,7 @@ nav button {
 
 .list {
   min-width: 35%;
-  height: 50vh;
+  height: 75vh;
   overflow: auto;
   position: absolute;
   z-index: 1;
