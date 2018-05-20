@@ -117,7 +117,7 @@ class App extends React.Component {
   initializeInfoWindow() {
     let infoWindow = new window.google.maps.InfoWindow({
       content: 'Loading content...',
-      maxWidth: 300
+      maxWidth: 500
     });
 
     this.setState({ infoWindow });
